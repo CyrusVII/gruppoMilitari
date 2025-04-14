@@ -143,25 +143,27 @@ class ControlloMilitare(Fanteria, Cavalleria, Artiglieria, SupportoLogistico, Ri
     def attacco(self, attaccante, difensore):
         successo = self.calcola_successo(attaccante)
         if random.random() < successo:
-            difensore.numero_soldati -= 1
+            difensore.numero_soldati -= random.randint(1, 10)
             print(f"✅ {attaccante.nome} ha colpito {difensore.nome}!")
+            print(f"💥 Soldati rimasti {difensore.nome}: {difensore.numero_soldati}")
         else:
             print(f"❌ {attaccante.nome} ha fallito l'attacco contro {difensore.nome}.")
 
     def aggiorna_percentuali_resa(self):
-        totale_rossi = sum(u.numero_soldati for u in self.rossi.values())
-        totale_blu = sum(u.numero_soldati for u in self.blu.values())
+        # Calcolare la percentuale di resa basandoci sul numero di soldati rimasti
+        totale_rossi = sum([unita.numero_soldati for unita in self.rossi.values()])
+        totale_blu = sum([unita.numero_soldati for unita in self.blu.values()])
 
-        percentuale_rossi = (totale_rossi / 50) * 100  
-        percentuale_blu = (totale_blu / 50) * 100  
+        percentuale_rossi = (totale_rossi / 50) * 100  # Supponiamo che il numero iniziale di soldati fosse 50
+        percentuale_blu = (totale_blu / 50) * 100
 
-        print(f"📉 Percentuale resa Rossi: {percentuale_rossi:.1f}%")
-        print(f"📉 Percentuale resa Blu: {percentuale_blu:.1f}%")
+        print(f"📉 Percentuale di non resa: {percentuale_rossi:.1f}%")
+        print(f"📉 Percentuale di non resa: {percentuale_blu:.1f}%")
 
-        if percentuale_rossi >= 80:
+        if percentuale_rossi <= 20:
             print("🟥 I Rossi si arrendono!")
             return "blu"
-        elif percentuale_blu >= 80:
+        elif percentuale_blu <= 20:
             print("🟦 I Blu si arrendono!")
             return "rosso"
         return None
